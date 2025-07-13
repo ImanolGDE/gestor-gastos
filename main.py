@@ -1,12 +1,19 @@
+import os 
 import csv
-import os
-from datetime import datetime
 
-from utils import pedir_monto_validado
-from operaciones import eliminar_gasto, limpiar_gastos
+from operaciones import (
+    añadir_gasto,
+    ver_gastos,
+    resumen_por_etiqueta,
+    eliminar_gasto,
+    limpiar_gastos,
+    buscar_gastos_por_palabra,
+    buscar_gastos_por_etiqueta
+)
+
 
 FICHERO = "gastos.csv"
-CAMPOS = ["fecha", "categoria", "monto", "comentario"]
+CAMPOS = ["fecha", "etiquetas", "monto", "comentario"]
 
 def inicializar_fichero():
     if not os.path.exists(FICHERO):
@@ -14,70 +21,17 @@ def inicializar_fichero():
             writer = csv.DictWriter(f, fieldnames=CAMPOS)
             writer.writeheader()
 
-def añadir_gasto():
-    fecha = input("Fecha (YYYY-MM-DD) [hoy por defecto]: ").strip()
-    if fecha == "":
-        fecha = datetime.today().strftime('%Y-%m-%d')
-
-    categoria = input("Categoría: ").strip()
-    # monto = input("Monto (€): ").strip()
-    # monto = pedir_float_valido("Monto (€): ")
-    monto = pedir_monto_validado()
-    comentario = input("Comentario (opcional): ").strip()
-
-    with open(FICHERO, mode="a", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=CAMPOS)
-        writer.writerow({
-            "fecha": fecha,
-            "categoria": categoria,
-            "monto": f"{monto:.2f}",
-            "comentario": comentario
-        })
-
-def ver_gastos():
-    with open(FICHERO, mode="r") as f:
-        reader = csv.DictReader(f)
-        gastos = list(reader)
-
-    if not gastos:
-        print("⚠️ No hay gastos registrados.")
-        return
-
-    print("\n📋 Lista de gastos:")
-    for fila in gastos:
-        print(f'{fila["fecha"]} - {fila["categoria"]} - {fila["monto"]}€ - {fila["comentario"]}')
-
-def resumen_por_categoria():
-    resumen = {}
-    errores = 0
-
-    with open(FICHERO, mode="r") as f:
-        reader = csv.DictReader(f)
-        for fila in reader:
-            cat = fila["categoria"]
-            try:
-                monto = float(fila["monto"])
-                resumen[cat] = resumen.get(cat, 0) + monto
-            except ValueError:
-                errores += 1
-                print(f"⚠️ Gasto con monto no válido ignorado: {fila}")
-
-    print("\n📊 Resumen por categoría:")
-    for cat, total in resumen.items():
-        print(f"• {cat}: {total:.2f} €")
-
-    if errores > 0:
-        print(f"\n❗ Se ignoraron {errores} gasto(s) con montos inválidos.")
-
 def menu():
     while True:
         print("\nGestor de Gastos")
         print("1. Añadir gasto")
         print("2. Ver todos los gastos")
-        print("3. Ver resumen por categoría")
-        print("4. Eliminar gasto")
-        print("5. Limpiar todos los gastos")
-        print("6. Salir")
+        print("3. Ver resumen por etiqueta")
+        print("4. Buscar gastos por palabra")
+        print("5. Buscar gastos por etiqueta")
+        print("6. Eliminar gasto")
+        print("7. Limpiar todos los gastos")
+        print("8. Salir")
 
 
         opcion = input("Elige una opción: ").strip()
@@ -87,12 +41,18 @@ def menu():
         elif opcion == "2":
             ver_gastos()
         elif opcion == "3":
-            resumen_por_categoria()
+            resumen_por_etiqueta(FICHERO)
         elif opcion == "4":
-            eliminar_gasto(FICHERO)
+            palabra = input("Introduce una palabra a buscar: ").strip()
+            buscar_gastos_por_palabra(FICHERO, palabra)
         elif opcion == "5":
-            limpiar_gastos(FICHERO)
+            etiqueta = input("Introduce una etiqueta a buscar: ").strip()
+            buscar_gastos_por_etiqueta(FICHERO, etiqueta)
         elif opcion == "6":
+            eliminar_gasto(FICHERO)
+        elif opcion == "7":
+            limpiar_gastos(FICHERO)
+        elif opcion == "8":
             break
         else:
             print("Opción no válida")

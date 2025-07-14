@@ -35,8 +35,24 @@ Este es un pequeño programa hecho en Python que permite registrar y consultar t
 
 ## Próximos pasos
 
-- Añadir funcionalidades intermedias
-- Crear interfaz gráfica con Tkinter
+- Solucionar problemas
+    - Los caracteres especiales (ñ, tildes, ...) no se muestran correctamente
+
+- Añadir funcionalidades avanzadas
+    - Buscar por rango de fechas
+    - Presupuesto mensual con alerta
+    - Separar gastos de grafica mensual por categorias
+    - Editar gasto existente
+    - Ordenar los gastos al clicar las columnas (monto, fecha, etiquetas...)
+    - Graficos adaptables (cambiar estilo de claro a oscuro, cambiar colores...)
+    - Gestión de multiples usuarios
+
+- Mejorar interfaz gráfica 
+    - Animaciones
+
+- Futuras versiones
+    - Versión móvil (Kivy)
+    - Versión web (Flask o Django + HTML/CSS)
 
 ## Autor
 

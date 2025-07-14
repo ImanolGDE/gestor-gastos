@@ -35,6 +35,27 @@ def añadir_gasto():
             "comentario": comentario
         })
 
+def añadir_gasto(fichero, fecha, etiquetas, monto, comentario):
+
+    if not etiquetas.strip():
+        raise ValueError("Debes introducir al menos una etiqueta.")
+    if not monto.strip():
+        raise ValueError("Debes introducir un monto.")
+    try:
+        float(monto)
+    except ValueError:
+        raise ValueError("El monto debe ser un número válido.")
+
+    with open(fichero, mode="a", newline="") as f:
+        import csv
+        writer = csv.DictWriter(f, fieldnames=["fecha", "etiquetas", "monto", "comentario"])
+        writer.writerow({
+            "fecha": fecha,
+            "etiquetas": etiquetas.upper(),
+            "monto": monto,
+            "comentario": comentario
+        })
+
 def ver_gastos():
     with open(FICHERO, mode="r") as f:
         reader = csv.DictReader(f)
@@ -168,3 +189,16 @@ def limpiar_gastos(fichero):
         print("🧼 Todos los gastos han sido eliminados.")
     else:
         print("❎ Acción cancelada.")
+
+def leer_gastos(fichero):
+    """
+    Devuelve una lista de diccionarios con todos los gastos del CSV.
+    No imprime nada, solo se usa para interfaces gráficas u otras funciones.
+    """
+
+    try:
+        with open(fichero, mode="r") as f:
+            reader = csv.DictReader(f)
+            return list(reader)
+    except FileNotFoundError:
+        return []

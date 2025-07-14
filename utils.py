@@ -15,8 +15,7 @@ def pedir_monto_validado():
             return float(entrada)
         else:
             print("❌ Entrada no válida. Introduce un número con punto decimal.")
-
-            
+           
 def es_float_valido(texto):
     """
     Devuelve True si el texto se puede convertir a float, False si no.
@@ -56,3 +55,9 @@ def hacer_backup(fichero):
     shutil.copyfile(fichero, nombre_backup)
     print(f"💾 Copia de seguridad creada: {nombre_backup}")
 
+def hacer_backup():
+    """
+    Crea una carpeta para las copias de seguridad si no existiera ya
+    """
+    if not os.path.exists("backups"):
+        os.makedirs("backups")
